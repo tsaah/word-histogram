@@ -13,7 +13,6 @@ This is a Qt6 QML c++20 app that reads through a file and incrementally shows hi
 - After opening a text file histogram view will become visible which will present top 15 frequent words appearing in a file incrementally.
 - There is a progress bar that will visually display a progress percentage.
 - And a couple of buttons. one for Pause/Resume and the other to Stop the process and return to file open screen.
-- The histogram view is a Repeater object that uses a model in order to visualize data
 - It requires only basic QtQuick and Layout components
 
 ### QML Ui
@@ -44,5 +43,8 @@ This is a Qt6 QML c++20 app that reads through a file and incrementally shows hi
 	- It is running in a separate thread.
 	- It provides latest data snapshots roughly every 16 milliseconds.
 	- It uses queued connections and c++20 atomics features in order to be interacted with.
-- UniquePriorityQueue class
-	- It is a customized std::priority_queue that is able to incrementally track top frequently used words.
+- TopWordStorage class
+	- It has hash that track occurrence of every word
+	- It has a threshold value that tracks minimum word occurrence that is good enough for top 15* (it is not that accurate but it allows for early returns)
+	- It has a map of counts to set of words, where each set and map sizes are kept at 15 (so it actually keeps 15 to 225 top used words, it could be more precise but with a performance tradeoff)
+	- It can construct a vector of top 15 words with a linear scan

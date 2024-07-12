@@ -23,10 +23,10 @@ qt_add_qml_module(word_histogram_app
     VERSION 1.0
     SOURCES
         wordcount.h
-        uniquepriorityqueue.h uniquepriorityqueue.cpp
         filewordcounter.h filewordcounter.cpp
         filewordcounterworker.h filewordcounterworker.cpp
         wordfrequencymodel.h wordfrequencymodel.cpp
+        topwordstorage.h topwordstorage.cpp
     QML_FILES
         qml/Button.qml
         qml/ProgressBar.qml

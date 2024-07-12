@@ -6,7 +6,9 @@
 #include <QTimer>
 #include <QHash>
 
-#include "uniquepriorityqueue.h"
+#include <unordered_set>
+
+#include "topwordstorage.h"
 
 // and this is the worker that will process our file in a separate thread
 class FileWordCounterWorker final: public QObject {
@@ -35,6 +37,5 @@ private:
     std::atomic<bool> paused_{ false };
     std::atomic<bool> aborted_{ false };
 
-    QHash<QString, quint64> wordCountHash_; // this is a hash that contains all word counts
-    UniquePriorityQueue topWordsStorage_; // this is a top 15 word count priority queue
+    TopWordStorage topWordsStorage_;
 };

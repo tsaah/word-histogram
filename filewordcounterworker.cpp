@@ -74,8 +74,7 @@ void FileWordCounterWorker::onStart(const QUrl &url) {
 
         if (Q_UNLIKELY(word.isEmpty())) { continue; } // howevery do nothing if for some reason our word is empty
 
-        const auto count = ++wordCountHash_[word]; // update our word count hash
-        topWordsStorage_.emplaceUnique({ word, count }); // and update our top words priority queue
+        topWordsStorage_.store(word);
         word.clear(); // clear word - so it can be reused again
 
         // now this part
@@ -84,10 +83,7 @@ void FileWordCounterWorker::onStart(const QUrl &url) {
         // I am using QElapsedTimer to trigger an snapshot creation
         if (Q_UNLIKELY(timer.durationElapsed() > 16ms)) {
             emit progress(pos / static_cast<qreal>(fileSize));
-
-            snapshot = topWordsStorage_.data(); // copy our unsorted top word count data
-            std::sort(snapshot.begin(), snapshot.end(), [](const WordCount& a, const WordCount& b){ return a.count > b.count; }); // and sort it
-
+            snapshot = topWordsStorage_.getFlatStorage(); // copy our unsorted top word count data
             emit snapshotUpdate(snapshot);
             timer.restart();
         }
@@ -96,8 +92,7 @@ void FileWordCounterWorker::onStart(const QUrl &url) {
 
     // when we finished or aborted the processing we will emit latest available data and exit so this worker can be removed
 
-    snapshot = topWordsStorage_.data();
-    std::sort(snapshot.begin(), snapshot.end(), [](const WordCount& a, const WordCount& b){ return a.count > b.count; });
+    snapshot = topWordsStorage_.getFlatStorage();
     emit snapshotUpdate(snapshot);
     emit progress(aborted_ ? 0.0 : 1.0);
 
